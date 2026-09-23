@@ -1,0 +1,17 @@
+{
+  "name": "rankmonitor",
+  "version": "1.0.0",
+  "description": "App Store category-chart rank monitoring for macOS, iOS and iPadOS",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "crawl": "node src/crawl.js",
+    "rollup": "node src/rollup.js",
+    "dashboard": "node src/dashboard.js",
+    "cleanup": "node src/cleanup.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

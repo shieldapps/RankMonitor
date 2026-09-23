@@ -1,0 +1,91 @@
+name: Hourly Crawl
+
+on:
+  # schedule is replaced by an external cron-job.org trigger, which is more reliable
+  # schedule:
+  #   - cron: "10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: rank-crawl
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (code)
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Restore data from data branch
+        run: |
+          mkdir -p data
+          if git fetch origin data 2>/dev/null; then
+            # the data branch is an orphan branch: its files sit at the repo root
+            # (points/, crawls/, meta/, ...) rather than under a data/ prefix
+            git archive origin/data 2>/dev/null | tar x -C data/ 2>/dev/null || true
+          fi
+
+      - name: Crawl
+        run: node src/crawl.js --once
+
+      - name: Rollup
+        run: node src/rollup.js
+
+      - name: Dashboard
+        run: node src/dashboard.js
+
+      - name: Push data to data branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TIMESTAMP=$(date -u +'%Y-%m-%dT%H:00:00Z')
+          REMOTE_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          TMPDIR=$(mktemp -d)
+
+          if git ls-remote --heads origin data | grep -q data; then
+            git clone --branch data --single-branch "$REMOTE_URL" "$TMPDIR" 2>/dev/null || true
+          fi
+          cd "$TMPDIR"
+
+          # if the data branch does not exist yet, init an empty repo and wire up the remote
+          if [ ! -d .git ]; then
+            git init -b data
+            git remote add origin "$REMOTE_URL"
+          fi
+
+          # Copy the new data files into the temp directory, overwriting existing ones
+          cp -r "$GITHUB_WORKSPACE"/data/* ./
+
+          git config user.name "RankMonitor Bot"
+          git config user.email "bot@shieldapps.local"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "data: $TIMESTAMP"
+            git push origin data
+          fi
+
+          cd /
+          rm -rf "$TMPDIR"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          keep_files: false
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com

@@ -1,0 +1,62 @@
+name: Cleanup Old Data
+
+# Manual dispatch only; uncomment the schedule block to enable automatic cleanup
+on:
+  # schedule:
+  #   - cron: "10 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (code)
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Restore data from data branch
+        run: |
+          mkdir -p data
+          if git fetch origin data 2>/dev/null; then
+            git archive origin/data 2>/dev/null | tar x -C data/ 2>/dev/null || true
+          fi
+
+      - name: Run cleanup
+        run: node src/cleanup.js --older-than 90
+
+      - name: Push cleaned data to data branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TMPDIR=$(mktemp -d)
+          REMOTE_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          if git ls-remote --heads origin data | grep -q data; then
+            git clone --branch data --single-branch "$REMOTE_URL" "$TMPDIR" 2>/dev/null || true
+          fi
+          cd "$TMPDIR"
+          if [ ! -d .git ]; then
+            git init -b data
+            git remote add origin "$REMOTE_URL"
+          fi
+
+          # Copy the cleaned data directory into the temp directory
+          rm -rf ./*
+          cp -r "$GITHUB_WORKSPACE"/data/* ./
+
+          git config user.name "RankMonitor Bot"
+          git config user.email "bot@shieldapps.local"
+          git add -A
+          TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          git commit -m "cleanup: remove data older than 90 days ($TIMESTAMP)" --allow-empty
+          git push origin data
+
+          cd /
+          rm -rf "$TMPDIR"
