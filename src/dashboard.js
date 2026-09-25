@@ -233,10 +233,13 @@ function generateHtml(current, config, appIcons, history) {
     }
 
     let html = `<div class="section"><h3>&#167;${idx + 1} ${esc(our.name)}</h3>`;
-    html += `<table class="tbl"><thead><tr><th class="c-app">App</th><th class="c-cat">Category</th>`;
+    html += `<div class="tblscroll"><table class="tbl"><thead><tr><th class="c-app">App</th><th class="c-cat">Category</th>`;
     for (const cc of allCountries) {
-      const ccLabel = COUNTRY_NAMES[cc] ? `${COUNTRY_NAMES[cc]}(${cc.toUpperCase()})` : cc.toUpperCase();
-      html += `<th class="${coreCountries.includes(cc) ? "core" : "sec"}">${ccLabel}</th>`;
+      // Storefront code only - the full name made every header wrap. The name is
+      // still reachable: title serves desktop hover, data-cc feeds the tap
+      // handler for touch devices, which have no hover at all.
+      const ccName = COUNTRY_NAMES[cc] || cc.toUpperCase();
+      html += `<th class="${coreCountries.includes(cc) ? "core" : "sec"}" data-cc="${cc}" title="${esc(ccName)}">${cc.toUpperCase()}</th>`;
     }
     html += `</tr></thead><tbody>`;
 
@@ -249,29 +252,33 @@ function generateHtml(current, config, appIcons, history) {
 
       html += `<tr>`;
       if (isFirstOfApp) {
-        const tag = r._isOurs ? '<span class="t-our">Ours</span>' : '<span class="t-comp">Competitor</span>';
         html += `<td class="c-app" rowspan="${deduped.filter((x) => x._appId === r._appId).length}">`;
+        html += `<div class="c-appinner">`;
         if (icon) html += `<img class="icon" src="${esc(icon)}" width="32" height="32" loading="lazy" onerror="this.style.display='none'">`;
-        html += `<div><a class="aname" href="https://apps.apple.com/app/id${esc(r._appId)}" target="_blank" rel="noopener">${esc(info.name)}</a> ${tag}</div>`;
+        html += `<a class="aname" href="https://apps.apple.com/app/id${esc(r._appId)}" target="_blank" rel="noopener">${esc(info.name)}</a>`;
+        html += `</div>`;
         html += `</td>`;
       }
       html += `<td class="c-cat">${esc(r.genre_name)}</td>`;
       for (const cc of allCountries) {
+        // Mirrors the <th class="core|sec"> above; the narrow-screen rule hides
+        // .cc-sec cells to fold the 14 secondary storefronts away.
+        const ccCls = coreCountries.includes(cc) ? "cc-core" : "cc-sec";
         const cell = r.countries[cc];
-        if (!cell) { html += `<td class="na">-</td>`; continue; }
+        if (!cell) { html += `<td class="na ${ccCls}">-</td>`; continue; }
         if (cell.status === "on_chart") {
           let d = "";
           // delta > 0 means the rank number grew = rank dropped
           if (cell.delta > 0) d = `<span class="dn">&#9660;${cell.delta}</span>`;
           else if (cell.delta < 0) d = `<span class="up">&#9650;${Math.abs(cell.delta)}</span>`;
-          html += `<td class="h">#${cell.rank} ${d}</td>`;
+          html += `<td class="h ${ccCls}">#${cell.rank} ${d}</td>`;
         } else {
-          html += `<td class="${sc[cell.status]}">${sl[cell.status] || "?"}</td>`;
+          html += `<td class="${sc[cell.status]} ${ccCls}">${sl[cell.status] || "?"}</td>`;
         }
       }
       html += `</tr>`;
     }
-    html += `</tbody></table></div>`;
+    html += `</tbody></table></div></div>`;
     return html;
   }
 
@@ -286,7 +293,7 @@ function generateHtml(current, config, appIcons, history) {
     cells: history.cells,
   });
 
-  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>App Store Rank Monitor</title>
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><title>App Store Rank Monitor</title>
 <script>
 // Set the theme as early as possible to avoid a white flash
 (function(){try{var t=localStorage.getItem('rm-theme');
@@ -304,6 +311,12 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
   --critical:#d03b3b; --serious:#ec835a;
   --chip-good-bg:rgba(12,163,12,.10); --chip-bad-bg:rgba(208,59,59,.10);
   --wash:rgba(11,11,11,.04);
+  /* Opaque twin of --wash. Sticky cells slide over other content, so a
+     translucent background would let the text underneath show through. */
+  --wash-solid:#f2f2f0;
+  /* Frozen matrix columns. --catcol's sticky offset is --appcol, so both must
+     stay in sync; changing them here is the only place to change them. */
+  --appcol:210px; --catcol:110px;
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -314,13 +327,18 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
   --critical:#d03b3b; --serious:#ec835a;
   --chip-good-bg:rgba(12,163,12,.16); --chip-bad-bg:rgba(208,59,59,.18);
   --wash:rgba(255,255,255,.05);
+  --wash-solid:#242423;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:var(--plane);color:var(--ink);padding:24px 32px;-webkit-font-smoothing:antialiased}
+  background:var(--plane);color:var(--ink);-webkit-font-smoothing:antialiased;
+  /* env() keeps content clear of the iPhone notch and home indicator; it is 0 elsewhere */
+  padding:calc(24px + env(safe-area-inset-top)) calc(32px + env(safe-area-inset-right))
+          calc(24px + env(safe-area-inset-bottom)) calc(32px + env(safe-area-inset-left))}
 h1{font-size:22px;margin-bottom:4px;letter-spacing:-.01em}
 .sub{color:var(--muted);font-size:12px;margin-bottom:20px}
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 .card{background:var(--surface-1);border-radius:12px;padding:16px 20px;margin-bottom:20px;
   box-shadow:0 1px 2px var(--border);border:1px solid var(--border)}
@@ -371,7 +389,7 @@ details.tblview summary{cursor:pointer;font-size:12px;color:var(--ink-2);list-st
 details.tblview summary::-webkit-details-marker{display:none}
 details.tblview summary::before{content:"▸ "}
 details.tblview[open] summary::before{content:"▾ "}
-.tblwrap{max-height:320px;overflow:auto;margin-top:10px}
+.tblwrap{max-height:320px;overflow:auto;-webkit-overflow-scrolling:touch;margin-top:10px}
 table.mini{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
 table.mini th,table.mini td{padding:5px 8px;text-align:left;border-bottom:1px solid var(--border)}
 table.mini th{position:sticky;top:0;background:var(--surface-1);color:var(--muted);font-weight:600;font-size:11px}
@@ -380,19 +398,42 @@ table.mini td.num{font-weight:600}
 /* ---- Matrix table ---- */
 .section{background:var(--surface-1);border-radius:12px;padding:16px 20px;margin-bottom:16px;
   box-shadow:0 1px 2px var(--border);border:1px solid var(--border)}
-.tbl{width:100%;border-collapse:collapse;font-size:13px}
+/* Horizontal scroll container. Without this the 22-column matrix was clipped
+   outright — the right-hand countries were unreachable, not merely off-screen.
+   This also fixes the same clipping on desktop. */
+.tblscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+/* border-collapse:separate (with 0 spacing) is required for position:sticky to
+   work on table cells; collapsed borders belong to the table, not the cell. */
+.tbl{border-collapse:separate;border-spacing:0;font-size:13px;min-width:100%}
 .tbl th,.tbl td{padding:7px 8px;text-align:center;border-bottom:1px solid var(--border);vertical-align:middle}
-.tbl th{background:var(--wash);font-weight:600;color:var(--ink-2);font-size:11px}
+.tbl th{background:var(--wash-solid);font-weight:600;color:var(--ink-2);font-size:11px}
 .tbl th.core{color:var(--ink)}
 .tbl th.sec{color:var(--muted)}
-.tbl td{font-variant-numeric:tabular-nums}
-.c-app{text-align:left;min-width:200px;white-space:nowrap}
-.c-cat{text-align:left;min-width:100px;font-weight:500}
-.icon{border-radius:0;background:var(--wash);object-fit:cover;vertical-align:middle;margin-right:8px}
+/* Opaque cells: a sticky column slides over its neighbours and would otherwise
+   show their text through a translucent background. */
+.tbl td{font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--surface-1)}
+
+/* Frozen first two columns. A sticky column needs a definite left edge, which
+   is why .c-app and .c-cat are fixed-width rather than min-width. They carry the
+   full .tbl th/.tbl td specificity so their text-align:left actually wins over
+   the centred cells above - and overflow:hidden, because a cell that is pinned to
+   a fixed width can no longer grow to fit a long app name. Without it the name
+   escapes the cell and the sticky Category column paints over the overflow,
+   which reads as stray text sitting inside the country columns. */
+.tbl th.c-app,.tbl td.c-app{text-align:left;width:var(--appcol);min-width:var(--appcol);max-width:var(--appcol);overflow:hidden;position:sticky;left:0;z-index:2}
+/* The second frozen column's offset is the first column's width — hence the
+   shared variable, so a breakpoint cannot desynchronise the two. */
+.tbl th.c-cat,.tbl td.c-cat{text-align:left;width:var(--catcol);min-width:var(--catcol);max-width:var(--catcol);overflow:hidden;text-overflow:ellipsis;font-weight:500;position:sticky;left:var(--appcol);z-index:2;border-right:1px solid var(--border)}
+.tbl thead th.c-app,.tbl thead th.c-cat{z-index:3}
+/* Country columns: wide enough for "#46 ▼3" without wrapping */
+.tbl th.core,.tbl th.sec,.tbl td.cc-core,.tbl td.cc-sec{min-width:64px}
+.icon{border-radius:0;background:var(--wash);object-fit:cover;vertical-align:middle;flex:0 0 auto}
+/* Icon and name on one row. The name is the only item allowed to shrink, so a
+   long one ellipsises inside the fixed-width column instead of escaping it. */
+.c-appinner{display:flex;align-items:center;gap:8px;min-width:0}
+.tbl td.c-app .aname{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .aname{font-size:14px;font-weight:600;color:var(--series-1);text-decoration:none}
 .aname:hover{text-decoration:underline}
-.t-our{font-size:10px;padding:1px 6px;border-radius:8px;background:var(--chip-good-bg);color:var(--good-ink);margin-left:4px}
-.t-comp{font-size:10px;padding:1px 6px;border-radius:8px;background:var(--wash);color:var(--ink-2);margin-left:4px}
 
 .h{color:var(--good-ink);font-weight:600}
 .off{color:var(--bad-ink)}
@@ -402,9 +443,55 @@ table.mini td.num{font-weight:600}
 .dn{color:var(--bad-ink);font-size:10px;margin-left:2px}
 .up{color:var(--good-ink);font-size:10px;margin-left:2px}
 
+/* ---- Country visibility toggle: only useful where the matrix is cramped ---- */
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.sechead h2{font-size:15px;font-weight:600}
+.ccbtn{display:none;border:1px solid var(--border);background:var(--surface-1);color:var(--ink-2);
+  border-radius:7px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+.ccbtn:hover{color:var(--ink)}
+.ccbtn:focus-visible{outline:2px solid var(--series-1);outline-offset:1px}
+/* Country-code reveal. Touch devices have no hover, so a code-only header would
+   be a dead end on a phone; tapping a header shows the full name here instead.
+   Fixed positioning keeps it clear of .tblscroll's overflow clipping, which
+   would otherwise cut the bubble off at the first and last columns. */
+.ccpop{position:fixed;z-index:20;display:none;padding:6px 10px;border-radius:8px;
+  background:var(--ink);color:var(--plane);font-size:12px;font-weight:500;
+  white-space:nowrap;pointer-events:none;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.ccpop.on{display:block}
+
 @media (max-width:720px){
-  body{padding:16px}
-  .chart-box{height:280px}
+  body{padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
+              calc(14px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
+  h1{font-size:19px}
+  .card,.section{padding:13px 14px;border-radius:10px}
+  .chart-box{height:260px}
+
+  /* Filters stack full-width; the range control scrolls sideways rather than
+     overflowing the viewport. */
+  .filters{gap:10px}
+  .fgroup{width:100%}
+  .fgroup .flabel{flex:0 0 auto}
+  select{flex:1;max-width:none;min-height:44px;font-size:16px} /* 16px avoids iOS zoom-on-focus */
+  .seg{overflow-x:auto;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .seg::-webkit-scrollbar{display:none}
+  .seg button{flex:0 0 auto;min-height:40px;padding:8px 13px}
+  .themebtn{min-height:40px}
+
+  /* Secondary countries fold away behind the toggle */
+  body:not(.showall) .tbl .cc-sec{display:none}
+  .ccbtn{display:inline-block;min-height:40px}
+
+  .tile{flex:1 1 calc(50% - 5px);min-width:0}
+  .tile .v{font-size:20px}
+  .tblwrap{max-height:260px}
+}
+
+@media (max-width:480px){
+  .tbl{font-size:12px}
+  :root{--appcol:160px;--catcol:84px}
+  .tbl th,.tbl td{padding:6px 6px}
+  .tbl th.core,.tbl th.sec,.tbl td.cc-core,.tbl td.cc-sec{min-width:56px}
+  .tile .v{font-size:19px}
 }
 </style></head><body>
 <div class="top">
@@ -440,7 +527,13 @@ table.mini td.num{font-weight:600}
   </details>
 </div>
 
+<div class="sechead">
+  <h2>Country matrix &mdash; each App against its competitors</h2>
+  <button class="ccbtn" id="ccbtn" type="button" aria-pressed="false">Show all ${allCountries.length} countries</button>
+</div>
 ${config.apps.map((a, i) => renderSection(a, i)).join("\n")}
+
+<div class="ccpop" id="ccpop" role="status" aria-live="polite"></div>
 
 <script>
 const D = ${chartData};
@@ -480,7 +573,7 @@ D.apps.forEach((a, i) => {
 D.countries.forEach((cc) => {
   const o = document.createElement('option');
   o.value = cc;
-  o.textContent = (D.countryNames[cc] || cc) + '(' + cc.toUpperCase() + ')';
+  o.textContent = cc.toUpperCase();
   ccSel.appendChild(o);
 });
 
@@ -572,6 +665,7 @@ function render(){
   const [vals0, spans0, gapsFlat, st] = raw;
   const labels = D.buckets[curRange];
   const T = tokens();
+  const narrow = mqNarrow.matches;
 
   // 0 is the null sentinel → restore it to null so the line breaks instead of connecting to 0
   const vals = vals0.map((v) => (v > 0 ? v : null));
@@ -658,7 +752,7 @@ function render(){
     connectNulls: false,
     showSymbol: true,
     symbol: 'circle',
-    symbolSize: labels.length <= 120 ? 7 : 5,
+    symbolSize: narrow ? (labels.length <= 120 ? 8 : 6) : (labels.length <= 120 ? 7 : 5),
     lineStyle: { width: 2, color: lineColor },
     itemStyle: { color: lineColor, borderWidth: 2, borderColor: T.surface },
     // Do not use focus:'series' —— that fades the gap markers, which are exactly what you compare against when reading this line
@@ -667,7 +761,8 @@ function render(){
       silent: true,
       symbol: 'none',
       lineStyle: { color: T.axis, width: 1, type: 'solid' },
-      label: { formatter: 'No rank', position: 'end', color: T.muted, fontSize: 11 },
+      // 'end' sits outside the plot and would clip against the narrow right margin
+      label: { formatter: 'No rank', position: narrow ? 'insideEndTop' : 'end', color: T.muted, fontSize: 11 },
       data: [{ yAxis: axisMax }],
     } : undefined,
   });
@@ -695,9 +790,14 @@ function render(){
 
   const opt = {
     animationDuration: 260,
-    grid: { top: 26, right: 62, bottom: 34, left: 46 },
+    // The right margin carries the "No rank" markLine label; it is trimmed on
+    // narrow screens so the plot keeps a usable width.
+    grid: { top: 26, right: narrow ? 30 : 62, bottom: 34, left: narrow ? 38 : 46 },
     tooltip: {
       trigger: 'axis',
+      // Keeps the tooltip inside the chart box — on a phone it would otherwise
+      // render past the edge of the viewport.
+      confine: true,
       axisPointer: { type: 'line', snap: true, lineStyle: { color: T.axis, width: 1, type: 'solid' } },
       backgroundColor: T.surface,
       borderColor: T.grid,
@@ -845,6 +945,46 @@ function renderTable(range, raw, app, cc){
 appSel.addEventListener('change', render);
 ccSel.addEventListener('change', render);
 
+// ---- Country visibility. Pure CSS toggle: the .cc-sec cells are already in
+// the DOM, so this never re-renders. The button itself is hidden above 720px.
+const ccBtn = $('ccbtn');
+ccBtn.addEventListener('click', () => {
+  const on = document.body.classList.toggle('showall');
+  ccBtn.setAttribute('aria-pressed', String(on));
+  ccBtn.textContent = on ? 'Show core countries only'
+                         : 'Show all ' + D.countries.length + ' countries';
+});
+
+// ---- Country code reveal. The header carries only the storefront code, and a
+// phone has no hover to fall back on, so tapping a header spells the name out.
+// Delegated from document because render() replaces the tables wholesale.
+const ccPop = $('ccpop');
+let ccPopTimer = 0;
+function hideCcPop() { ccPop.classList.remove('on'); }
+document.addEventListener('click', (e) => {
+  const th = e.target && e.target.closest ? e.target.closest('th[data-cc]') : null;
+  if (!th) { hideCcPop(); return; }
+  const code = th.getAttribute('data-cc').toUpperCase();
+  const name = th.getAttribute('title') || code;
+  // Re-tapping the open one dismisses it, so the bubble never has to be waited out.
+  if (ccPop.classList.contains('on') && ccPop.dataset.cc === code) { hideCcPop(); return; }
+  ccPop.dataset.cc = code;
+  ccPop.textContent = code + ' — ' + name;
+  ccPop.classList.add('on');
+  // Measure only once it is displayed, then clamp to the viewport: the first and
+  // last columns would otherwise push the bubble off an edge.
+  const r = th.getBoundingClientRect();
+  const w = ccPop.offsetWidth;
+  const maxLeft = (window.innerWidth || document.documentElement.clientWidth) - w - 8;
+  ccPop.style.left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, maxLeft)) + 'px';
+  ccPop.style.top = (r.bottom + 6) + 'px';
+  clearTimeout(ccPopTimer);
+  ccPopTimer = setTimeout(hideCcPop, 2400);
+});
+// The bubble is anchored to a rect measured at tap time, so any scroll would
+// leave it pointing at the wrong cell.
+window.addEventListener('scroll', hideCcPop, true);
+
 // ---- Theme switching ----
 $('theme').addEventListener('click', () => {
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -852,7 +992,23 @@ $('theme').addEventListener('click', () => {
   try { localStorage.setItem('rm-theme', next); } catch (e) {}
   render();
 });
-window.addEventListener('resize', () => ch.resize());
+
+// ---- Size changes ----
+// ECharts measures its container, so it must be told when the box changes.
+// Only a breakpoint crossing needs a full re-render (the chart's grid margins
+// depend on it); anything else is just a resize. The debounce also covers iOS,
+// which reports a stale size immediately after a rotation.
+const mqNarrow = window.matchMedia('(max-width:720px)');
+let lastNarrow = mqNarrow.matches, resizeTimer = 0;
+function onResize(){
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    ch.resize();
+    if (mqNarrow.matches !== lastNarrow) { lastNarrow = mqNarrow.matches; render(); }
+  }, 120);
+}
+window.addEventListener('resize', onResize);
+window.addEventListener('orientationchange', onResize);
 
 render();
 <\/script></body></html>`;
