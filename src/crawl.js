@@ -28,6 +28,24 @@ function yesterdayUTC() {
 }
 
 /**
+ * Platforms a tracked id should use when lookup returned no genre.
+ * Competitors follow the product entry they are attached to.
+ */
+function platformsForUnlisted(config, appId) {
+  const found = new Set();
+  for (const app of config.apps) {
+    const owns = String(app.id) === appId;
+    const competes = (app.competitors || []).some((cid) => String(cid) === appId);
+    if (!owns && !competes) continue;
+    const listed = app.platforms?.length ? app.platforms : config.platforms;
+    for (const platform of listed) {
+      if (config.platforms.includes(platform)) found.add(platform);
+    }
+  }
+  return found.size ? [...found] : [...config.platforms];
+}
+
+/**
  * Generate current.json.
  * platformMaxCount: { macos: 100, ios: 100 } — max entries returned per platform this round,
  * used to tell "depth limited" apart from "genuinely not on chart".
@@ -72,9 +90,13 @@ async function generateCurrent(ts, config, appMetaMap, points, crawls, prevPoint
     const platforms = app.platforms || [];
     const genreId = meta?.primary_genre_id || 0;
     const genreName = meta?.primary_genre_name || "";
-    for (const p of platforms) {
-      for (const chart of config.charts) {
-        groupings.add(JSON.stringify({ platform: p, genre_id: genreId, genre_name: genreName, chart }));
+    // No lookup result means no genre. A later pass adds one Unknown row
+    // instead of borrowing categories from other apps.
+    if (genreId) {
+      for (const p of platforms) {
+        for (const chart of config.charts) {
+          groupings.add(JSON.stringify({ platform: p, genre_id: genreId, genre_name: genreName, chart }));
+        }
       }
     }
     if (app.competitors) {
@@ -85,6 +107,7 @@ async function generateCurrent(ts, config, appMetaMap, points, crawls, prevPoint
         const allowedCPlatforms = cPlatforms.filter((p) => config.platforms.includes(p));
         const cGenreId = cMeta?.primary_genre_id || 0;
         const cGenreName = cMeta?.primary_genre_name || "";
+        if (!cGenreId) continue;
         for (const cp of allowedCPlatforms) {
           for (const chart of config.charts) {
             groupings.add(JSON.stringify({ platform: cp, genre_id: cGenreId, genre_name: cGenreName, chart }));
@@ -99,8 +122,9 @@ async function generateCurrent(ts, config, appMetaMap, points, crawls, prevPoint
     const g = JSON.parse(gJson);
     for (const appId of allAppIds) {
       const meta = appMetaMap.get(appId);
-      // Each app only shows rows for its own primary genre, not other genres
-      if (meta && meta.primary_genre_id && meta.primary_genre_id !== g.genre_id) continue;
+      // Own primary genre only. A missing lookup has no genre, so the app
+      // must not inherit categories that belong to other apps.
+      if (!meta?.primary_genre_id || meta.primary_genre_id !== g.genre_id) continue;
       const isOurs = ourIds.has(appId);
       const name = meta?.name || appId;
 
@@ -143,6 +167,30 @@ async function generateCurrent(ts, config, appMetaMap, points, crawls, prevPoint
         chart: g.chart,
         countries: countryCells,
       });
+    }
+  }
+
+  // Lookup missed these ids (removed from the store, or never found).
+  // One row per tracked platform, category Unknown. Rank cells stay empty:
+  // there is no genre chart to read.
+  for (const appId of allAppIds) {
+    const meta = appMetaMap.get(appId);
+    if (meta?.primary_genre_id) continue;
+    const name = meta?.name || appId;
+    const isOurs = ourIds.has(appId);
+    for (const platform of platformsForUnlisted(config, appId)) {
+      for (const chart of config.charts) {
+        rows.push({
+          app_id: appId,
+          name,
+          is_ours: isOurs,
+          platform,
+          genre_id: 0,
+          genre_name: "Unknown",
+          chart,
+          countries: {},
+        });
+      }
     }
   }
 
