@@ -145,3 +145,149 @@
 [2026-10-20T00:28:13.400Z] [INFO] current.json written rows=23
 [2026-10-20T00:28:13.400Z] [INFO] Current summary: on_chart=138, not_on_chart=202, depth_limited=0, crawl_error=0, total=340
 [2026-10-20T00:28:13.400Z] [INFO] === Crawl complete === 657.5s
+[2026-10-20T01:17:16.910Z] [INFO] === Crawl start === ts=2026-10-20T01:00:00Z
+[2026-10-20T01:17:16.914Z] [INFO] Config loaded apps=4, platforms=macos, categories=Business,Productivity,Utilities
+[2026-10-20T01:17:16.914Z] [INFO] App IDs to track: 23 our=4, competitors=19
+[2026-10-20T01:17:16.915Z] [INFO] Lookup needed (new IDs detected), fetching 23 apps...
+[2026-10-20T01:17:16.916Z] [INFO] Lookup: 23 unique IDs in 1 batch(es)
+[2026-10-20T01:17:16.916Z] [DEBUG] Lookup batch 1/1: 23 IDs
+[2026-10-20T01:17:17.057Z] [DEBUG] Lookup batch 1: 17 results
+[2026-10-20T01:17:17.057Z] [INFO] Lookup result: 17/23 apps found
+[2026-10-20T01:17:17.059Z] [INFO] Lookup done: 17/23 results
+[2026-10-20T01:17:17.060Z] [WARN] Lookup: ID 6757907460 not found in App Store
+[2026-10-20T01:17:17.060Z] [WARN] Lookup: ID 6754387281 not found in App Store
+[2026-10-20T01:17:17.060Z] [WARN] Lookup: ID 6751932360 not found in App Store
+[2026-10-20T01:17:17.060Z] [WARN] Lookup: ID 6758297373 not found in App Store
+[2026-10-20T01:17:17.060Z] [WARN] Lookup: ID 6575363680 not found in App Store
+[2026-10-20T01:17:17.060Z] [WARN] Lookup: ID 6751195470 not found in App Store
+[2026-10-20T01:17:17.061Z] [INFO] RSS requests: 60 countries=20, platforms=macos, categories=Business,Productivity,Utilities
+[2026-10-20T01:17:17.061Z] [INFO] RSS fetch start: 60 requests, concurrency=1
+[2026-10-20T01:17:17.689Z] [DEBUG] RSS ok: us/macos/Business/top-free entries=100
+[2026-10-20T01:17:27.692Z] [DEBUG] Hits: us/macos/Business/top-free 4 app(s) found
+[2026-10-20T01:17:28.459Z] [DEBUG] RSS ok: us/macos/Productivity/top-free entries=99
+[2026-10-20T01:17:38.465Z] [DEBUG] Hits: us/macos/Productivity/top-free 4 app(s) found
+[2026-10-20T01:17:39.823Z] [DEBUG] RSS ok: us/macos/Utilities/top-free entries=100
+[2026-10-20T01:17:49.830Z] [DEBUG] Hits: us/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:17:50.572Z] [DEBUG] RSS ok: gb/macos/Business/top-free entries=100
+[2026-10-20T01:18:00.579Z] [DEBUG] Hits: gb/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:18:01.480Z] [DEBUG] RSS ok: gb/macos/Productivity/top-free entries=99
+[2026-10-20T01:18:11.487Z] [DEBUG] Hits: gb/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:18:12.347Z] [DEBUG] RSS ok: gb/macos/Utilities/top-free entries=100
+[2026-10-20T01:18:22.354Z] [DEBUG] Hits: gb/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:18:23.368Z] [DEBUG] RSS ok: ca/macos/Business/top-free entries=100
+[2026-10-20T01:18:33.373Z] [DEBUG] Hits: ca/macos/Business/top-free 4 app(s) found
+[2026-10-20T01:18:34.268Z] [DEBUG] RSS ok: ca/macos/Productivity/top-free entries=99
+[2026-10-20T01:18:44.273Z] [DEBUG] Hits: ca/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:18:45.237Z] [DEBUG] RSS ok: ca/macos/Utilities/top-free entries=100
+[2026-10-20T01:18:55.242Z] [DEBUG] Hits: ca/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:18:56.092Z] [DEBUG] RSS ok: fr/macos/Business/top-free entries=99
+[2026-10-20T01:19:06.098Z] [DEBUG] Hits: fr/macos/Business/top-free 4 app(s) found
+[2026-10-20T01:19:06.098Z] [INFO] RSS progress: 10/60 (10 ok, 0 error, 27 points)
+[2026-10-20T01:19:07.014Z] [DEBUG] RSS ok: fr/macos/Productivity/top-free entries=99
+[2026-10-20T01:19:17.020Z] [DEBUG] Hits: fr/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:19:17.691Z] [DEBUG] RSS ok: fr/macos/Utilities/top-free entries=100
+[2026-10-20T01:19:27.698Z] [DEBUG] Hits: fr/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:19:28.402Z] [DEBUG] RSS ok: de/macos/Business/top-free entries=100
+[2026-10-20T01:19:38.409Z] [DEBUG] Hits: de/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:19:39.429Z] [DEBUG] RSS ok: de/macos/Productivity/top-free entries=99
+[2026-10-20T01:19:49.435Z] [DEBUG] Hits: de/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:19:50.241Z] [DEBUG] RSS ok: de/macos/Utilities/top-free entries=100
+[2026-10-20T01:20:00.247Z] [DEBUG] Hits: de/macos/Utilities/top-free 2 app(s) found
+[2026-10-20T01:20:01.152Z] [DEBUG] RSS ok: jp/macos/Business/top-free entries=100
+[2026-10-20T01:20:11.159Z] [DEBUG] Hits: jp/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:20:12.171Z] [DEBUG] RSS ok: jp/macos/Productivity/top-free entries=99
+[2026-10-20T01:20:22.178Z] [DEBUG] Hits: jp/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:20:23.274Z] [DEBUG] RSS ok: jp/macos/Utilities/top-free entries=100
+[2026-10-20T01:20:33.276Z] [DEBUG] Hits: jp/macos/Utilities/top-free 4 app(s) found
+[2026-10-20T01:20:34.070Z] [DEBUG] RSS ok: au/macos/Business/top-free entries=100
+[2026-10-20T01:20:44.076Z] [DEBUG] Hits: au/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:20:45.350Z] [DEBUG] RSS ok: au/macos/Productivity/top-free entries=99
+[2026-10-20T01:20:55.356Z] [DEBUG] Hits: au/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:20:55.356Z] [INFO] RSS progress: 20/60 (20 ok, 0 error, 53 points)
+[2026-10-20T01:20:56.259Z] [DEBUG] RSS ok: au/macos/Utilities/top-free entries=100
+[2026-10-20T01:21:06.266Z] [DEBUG] Hits: au/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:21:07.170Z] [DEBUG] RSS ok: es/macos/Business/top-free entries=100
+[2026-10-20T01:21:17.176Z] [DEBUG] Hits: es/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:21:18.029Z] [DEBUG] RSS ok: es/macos/Productivity/top-free entries=99
+[2026-10-20T01:21:28.036Z] [DEBUG] Hits: es/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:21:28.764Z] [DEBUG] RSS ok: es/macos/Utilities/top-free entries=100
+[2026-10-20T01:21:39.663Z] [DEBUG] RSS ok: it/macos/Business/top-free entries=98
+[2026-10-20T01:21:49.669Z] [DEBUG] Hits: it/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:21:50.899Z] [DEBUG] RSS ok: it/macos/Productivity/top-free entries=99
+[2026-10-20T01:22:00.906Z] [DEBUG] Hits: it/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:22:02.198Z] [DEBUG] RSS ok: it/macos/Utilities/top-free entries=100
+[2026-10-20T01:22:12.204Z] [DEBUG] Hits: it/macos/Utilities/top-free 2 app(s) found
+[2026-10-20T01:22:13.084Z] [DEBUG] RSS ok: pt/macos/Business/top-free entries=100
+[2026-10-20T01:22:23.090Z] [DEBUG] Hits: pt/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:22:24.051Z] [DEBUG] RSS ok: pt/macos/Productivity/top-free entries=99
+[2026-10-20T01:22:34.057Z] [DEBUG] Hits: pt/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:22:35.141Z] [DEBUG] RSS ok: pt/macos/Utilities/top-free entries=100
+[2026-10-20T01:22:45.147Z] [DEBUG] Hits: pt/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:22:45.148Z] [INFO] RSS progress: 30/60 (30 ok, 0 error, 74 points)
+[2026-10-20T01:22:46.141Z] [DEBUG] RSS ok: ch/macos/Business/top-free entries=100
+[2026-10-20T01:22:56.147Z] [DEBUG] Hits: ch/macos/Business/top-free 2 app(s) found
+[2026-10-20T01:22:57.060Z] [DEBUG] RSS ok: ch/macos/Productivity/top-free entries=99
+[2026-10-20T01:23:07.066Z] [DEBUG] Hits: ch/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:23:08.007Z] [DEBUG] RSS ok: ch/macos/Utilities/top-free entries=100
+[2026-10-20T01:23:18.014Z] [DEBUG] Hits: ch/macos/Utilities/top-free 3 app(s) found
+[2026-10-20T01:23:19.096Z] [DEBUG] RSS ok: be/macos/Business/top-free entries=100
+[2026-10-20T01:23:29.103Z] [DEBUG] Hits: be/macos/Business/top-free 2 app(s) found
+[2026-10-20T01:23:29.942Z] [DEBUG] RSS ok: be/macos/Productivity/top-free entries=99
+[2026-10-20T01:23:39.948Z] [DEBUG] Hits: be/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:23:40.846Z] [DEBUG] RSS ok: be/macos/Utilities/top-free entries=100
+[2026-10-20T01:23:50.852Z] [DEBUG] Hits: be/macos/Utilities/top-free 2 app(s) found
+[2026-10-20T01:23:52.829Z] [DEBUG] RSS ok: nl/macos/Business/top-free entries=100
+[2026-10-20T01:24:02.835Z] [DEBUG] Hits: nl/macos/Business/top-free 2 app(s) found
+[2026-10-20T01:24:03.686Z] [DEBUG] RSS ok: nl/macos/Productivity/top-free entries=99
+[2026-10-20T01:24:13.692Z] [DEBUG] Hits: nl/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:24:14.423Z] [DEBUG] RSS ok: nl/macos/Utilities/top-free entries=100
+[2026-10-20T01:24:24.428Z] [DEBUG] Hits: nl/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:24:25.238Z] [DEBUG] RSS ok: tw/macos/Business/top-free entries=100
+[2026-10-20T01:24:35.244Z] [DEBUG] Hits: tw/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:24:35.244Z] [INFO] RSS progress: 40/60 (40 ok, 0 error, 97 points)
+[2026-10-20T01:24:36.166Z] [DEBUG] RSS ok: tw/macos/Productivity/top-free entries=99
+[2026-10-20T01:24:46.172Z] [DEBUG] Hits: tw/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:24:46.920Z] [DEBUG] RSS ok: tw/macos/Utilities/top-free entries=100
+[2026-10-20T01:24:57.696Z] [DEBUG] RSS ok: hk/macos/Business/top-free entries=100
+[2026-10-20T01:25:07.702Z] [DEBUG] Hits: hk/macos/Business/top-free 2 app(s) found
+[2026-10-20T01:25:08.816Z] [DEBUG] RSS ok: hk/macos/Productivity/top-free entries=99
+[2026-10-20T01:25:18.823Z] [DEBUG] Hits: hk/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:25:19.711Z] [DEBUG] RSS ok: hk/macos/Utilities/top-free entries=100
+[2026-10-20T01:25:29.718Z] [DEBUG] Hits: hk/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:25:30.604Z] [DEBUG] RSS ok: nz/macos/Business/top-free entries=100
+[2026-10-20T01:25:40.610Z] [DEBUG] Hits: nz/macos/Business/top-free 5 app(s) found
+[2026-10-20T01:25:41.606Z] [DEBUG] RSS ok: nz/macos/Productivity/top-free entries=99
+[2026-10-20T01:25:51.613Z] [DEBUG] Hits: nz/macos/Productivity/top-free 3 app(s) found
+[2026-10-20T01:25:52.554Z] [DEBUG] RSS ok: nz/macos/Utilities/top-free entries=100
+[2026-10-20T01:26:02.561Z] [DEBUG] Hits: nz/macos/Utilities/top-free 1 app(s) found
+[2026-10-20T01:26:03.492Z] [DEBUG] RSS ok: sg/macos/Business/top-free entries=100
+[2026-10-20T01:26:13.499Z] [DEBUG] Hits: sg/macos/Business/top-free 2 app(s) found
+[2026-10-20T01:26:14.363Z] [DEBUG] RSS ok: sg/macos/Productivity/top-free entries=99
+[2026-10-20T01:26:24.369Z] [DEBUG] Hits: sg/macos/Productivity/top-free 1 app(s) found
+[2026-10-20T01:26:24.369Z] [INFO] RSS progress: 50/60 (50 ok, 0 error, 116 points)
+[2026-10-20T01:26:25.426Z] [DEBUG] RSS ok: sg/macos/Utilities/top-free entries=100
+[2026-10-20T01:26:35.432Z] [DEBUG] Hits: sg/macos/Utilities/top-free 2 app(s) found
+[2026-10-20T01:26:36.529Z] [DEBUG] RSS ok: in/macos/Business/top-free entries=100
+[2026-10-20T01:26:46.535Z] [DEBUG] Hits: in/macos/Business/top-free 4 app(s) found
+[2026-10-20T01:26:47.644Z] [DEBUG] RSS ok: in/macos/Productivity/top-free entries=99
+[2026-10-20T01:26:57.650Z] [DEBUG] Hits: in/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:26:58.614Z] [DEBUG] RSS ok: in/macos/Utilities/top-free entries=100
+[2026-10-20T01:27:09.319Z] [DEBUG] RSS ok: za/macos/Business/top-free entries=100
+[2026-10-20T01:27:19.325Z] [DEBUG] Hits: za/macos/Business/top-free 3 app(s) found
+[2026-10-20T01:27:20.326Z] [DEBUG] RSS ok: za/macos/Productivity/top-free entries=99
+[2026-10-20T01:27:30.332Z] [DEBUG] Hits: za/macos/Productivity/top-free 1 app(s) found
+[2026-10-20T01:27:31.091Z] [DEBUG] RSS ok: za/macos/Utilities/top-free entries=100
+[2026-10-20T01:27:41.096Z] [DEBUG] Hits: za/macos/Utilities/top-free 3 app(s) found
+[2026-10-20T01:27:42.085Z] [DEBUG] RSS ok: br/macos/Business/top-free entries=100
+[2026-10-20T01:27:52.091Z] [DEBUG] Hits: br/macos/Business/top-free 2 app(s) found
+[2026-10-20T01:27:52.964Z] [DEBUG] RSS ok: br/macos/Productivity/top-free entries=99
+[2026-10-20T01:28:02.970Z] [DEBUG] Hits: br/macos/Productivity/top-free 2 app(s) found
+[2026-10-20T01:28:03.799Z] [DEBUG] RSS ok: br/macos/Utilities/top-free entries=100
+[2026-10-20T01:28:13.805Z] [INFO] RSS progress: 60/60 (60 ok, 0 error, 135 points)
+[2026-10-20T01:28:13.806Z] [INFO] RSS fetch done: 60 ok, 0 error, 135 points
+[2026-10-20T01:28:13.806Z] [INFO] Platform max returned: macos = 100
+[2026-10-20T01:28:13.806Z] [INFO] RSS results: 60 ok, 0 error, 135 rank points
+[2026-10-20T01:28:13.837Z] [INFO] Stored: 60 crawls, 135 points
+[2026-10-20T01:28:13.848Z] [INFO] current.json written rows=23
+[2026-10-20T01:28:13.849Z] [INFO] Current summary: on_chart=135, not_on_chart=205, depth_limited=0, crawl_error=0, total=340
+[2026-10-20T01:28:13.849Z] [INFO] === Crawl complete === 656.9s
