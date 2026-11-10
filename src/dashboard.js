@@ -477,8 +477,12 @@ table.mini td.num{font-weight:600}
   .seg button{flex:0 0 auto;min-height:40px;padding:8px 13px}
   .themebtn{min-height:40px}
 
-  /* Secondary countries fold away behind the toggle */
-  body:not(.showall) .tbl .cc-sec{display:none}
+  /* Secondary countries fold away behind the toggle. The headers carry .sec,
+     not .cc-sec, so both have to be hidden: with only the body cells removed
+     the row ran out of cells early and the trailing headers sat above blank
+     space, which read as "those countries have no data". */
+  body:not(.showall) .tbl th.sec,
+  body:not(.showall) .tbl td.cc-sec{display:none}
   .ccbtn{display:inline-block;min-height:40px}
 
   .tile{flex:1 1 calc(50% - 5px);min-width:0}
